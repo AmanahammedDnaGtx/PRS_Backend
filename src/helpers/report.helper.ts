@@ -38,25 +38,34 @@ export const buildReportResponse = (report: ReportDocument): ReportResponse => {
   };
 };
 
-const splitCategoryNames = (categoryValue: string): string[] => {
+const normalizeCategoryNames = (categoryValue: unknown): string[] => {
   const categoryNames: string[] = [];
   const seenCategoryNames = new Set<string>();
+  const categoryValues = Array.isArray(categoryValue)
+    ? categoryValue
+    : [categoryValue];
 
-  for (const categoryName of categoryValue.split(",")) {
-    const trimmedCategoryName = categoryName.trim();
-
-    if (!trimmedCategoryName) {
+  for (const categoryValueItem of categoryValues) {
+    if (typeof categoryValueItem !== "string") {
       continue;
     }
 
-    const normalizedCategoryName = trimmedCategoryName.toLowerCase();
+    for (const categoryName of categoryValueItem.split(",")) {
+      const trimmedCategoryName = categoryName.trim();
 
-    if (seenCategoryNames.has(normalizedCategoryName)) {
-      continue;
+      if (!trimmedCategoryName) {
+        continue;
+      }
+
+      const normalizedCategoryName = trimmedCategoryName.toLowerCase();
+
+      if (seenCategoryNames.has(normalizedCategoryName)) {
+        continue;
+      }
+
+      seenCategoryNames.add(normalizedCategoryName);
+      categoryNames.push(trimmedCategoryName);
     }
-
-    seenCategoryNames.add(normalizedCategoryName);
-    categoryNames.push(trimmedCategoryName);
   }
 
   return categoryNames;
@@ -67,16 +76,16 @@ export const getPhenotypeCategoryNames = (phenotype: unknown): string[] => {
     return [];
   }
 
-  if ("category_en" in phenotype && typeof phenotype.category_en === "string") {
-    const categoryNames = splitCategoryNames(phenotype.category_en);
+  if ("category_en" in phenotype) {
+    const categoryNames = normalizeCategoryNames(phenotype.category_en);
 
     if (categoryNames.length > 0) {
       return categoryNames;
     }
   }
 
-  if ("category" in phenotype && typeof phenotype.category === "string") {
-    return splitCategoryNames(phenotype.category);
+  if ("category" in phenotype) {
+    return normalizeCategoryNames(phenotype.category);
   }
 
   return [];

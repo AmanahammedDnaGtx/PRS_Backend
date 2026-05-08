@@ -26,6 +26,8 @@ export const openApiSpec = {
       get: {
         tags: ["Health"],
         summary: "Check if the server is running",
+        description:
+          "Use this endpoint for a quick uptime check. It is helpful for confirming that the Express server process is running before testing versioned API routes.",
         responses: {
           "200": {
             description: "Server is running",
@@ -37,6 +39,8 @@ export const openApiSpec = {
       get: {
         tags: ["Health"],
         summary: "Check API health",
+        description:
+          "Use this endpoint to verify that the API base path is mounted and reachable. This is the best lightweight check for deployment monitoring and API availability tests.",
         responses: {
           "200": {
             description: "API is healthy",
@@ -48,6 +52,8 @@ export const openApiSpec = {
       get: {
         tags: ["Users"],
         summary: "Get all users",
+        description:
+          "Use this endpoint to list all stored users. It is useful for admin views, development checks, and verifying that user creation worked as expected.",
         responses: {
           "200": {
             description: "List of users",
@@ -57,6 +63,8 @@ export const openApiSpec = {
       post: {
         tags: ["Users"],
         summary: "Create a new user",
+        description:
+          "Use this endpoint to add a new user record to the system. It validates the payload, enforces unique email addresses, and returns the created user in a public-safe format.",
         requestBody: {
           required: true,
           content: {
@@ -84,6 +92,8 @@ export const openApiSpec = {
       get: {
         tags: ["Users"],
         summary: "Get a user by MongoDB id",
+        description:
+          "Use this endpoint when you already have a user id and need the details for one specific user. It is commonly used after listing users or after creating a new user.",
         parameters: [
           {
             name: "userId",
@@ -112,7 +122,7 @@ export const openApiSpec = {
         tags: ["Reports"],
         summary: "Upload a JSON report file",
         description:
-          "Upload a JSON file using multipart/form-data with the field name 'file'. The API stores the file using sample.id as the MongoDB primary key. Re-uploading the same sample.id updates the existing record and keeps existing phenotypes while adding or replacing uploaded phenotype IDs.",
+          "Use this endpoint to import a PRS report JSON file into the system. Upload the file with multipart/form-data using the field name 'file'. The API stores the file using sample.id as the MongoDB primary key. Re-uploading the same sample.id updates the existing record and keeps existing phenotypes while adding or replacing uploaded phenotype IDs.",
         requestBody: {
           required: true,
           content: {
@@ -147,6 +157,8 @@ export const openApiSpec = {
       get: {
         tags: ["Reports"],
         summary: "Get a stored report by sample.id",
+        description:
+          "Use this endpoint to fetch one stored PRS report by its sample.id. It is helpful when you need the saved report payload, sample details, timestamps, or total phenotype count for one report.",
         parameters: [
           {
             name: "reportId",
@@ -173,7 +185,7 @@ export const openApiSpec = {
         tags: ["Reports"],
         summary: "Get categories with trait counts and risk-level counts",
         description:
-          "Builds category summaries from phenotype category_en values. If category_en contains comma-separated categories, the phenotype is counted under each category.",
+          "Use this endpoint to build category overview screens or dashboard summaries for one report. It groups phenotypes by each category_en array value and returns trait counts plus risk-level counts. If a phenotype has category_en: [\"Health\", \"Immunological markers\"], it is counted under both categories.",
         parameters: [
           {
             name: "reportId",
@@ -200,7 +212,7 @@ export const openApiSpec = {
         tags: ["Reports"],
         summary: "Get all phenotypes for a specific category",
         description:
-          "Returns phenotypes where category_en contains the requested category. Comma-separated category_en values are matched individually.",
+          "Use this endpoint when a user selects one category and needs the matching phenotype list for that section. It returns phenotypes where the category_en array contains the requested category name.",
         parameters: [
           {
             name: "reportId",
@@ -218,7 +230,8 @@ export const openApiSpec = {
             schema: {
               type: "string",
             },
-            description: "The category name, for example Health, Nutrition, or Skin diseases",
+            description:
+              "The category name from a phenotype category_en array, for example Health, Nutrition, or Immunological markers",
           },
         ],
         responses: {
@@ -235,6 +248,8 @@ export const openApiSpec = {
       get: {
         tags: ["Reports"],
         summary: "Get full phenotype data by phenotype id",
+        description:
+          "Use this endpoint for phenotype detail views. It returns the full stored phenotype object for one phenotype id inside a specific report.",
         parameters: [
           {
             name: "reportId",
